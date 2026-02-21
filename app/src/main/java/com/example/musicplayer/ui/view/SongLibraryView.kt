@@ -10,10 +10,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.musicplayer.ui.Routes
 
 @Composable
-fun SongLibraryView() {
+fun SongLibraryView(navController: NavHostController) {
     Scaffold { paddingValues ->
 
         Column(
@@ -23,7 +24,9 @@ fun SongLibraryView() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Button(onClick = {}) {
+            Button(onClick = {
+                navController.navigate(Routes.MusicPlayerView + "/" + "music name")
+            }) {
                 Text(text = "Select a music")
             }
         }
