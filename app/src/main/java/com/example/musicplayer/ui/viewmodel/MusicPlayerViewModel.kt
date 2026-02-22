@@ -133,13 +133,16 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
         mMediaPlayerService.seekTo(newPosition)
     }
 
-    fun unBindMediaPlayerService() {
+    fun finishMediaPlayerService() {
         application.unbindService(mConnection)
+        val intent = Intent(application.applicationContext, MediaPlayerService::class.java)
+        application.stopService(intent)
     }
 
-    fun bindMediaPlayerService() {
+    fun initMediaPlayerService() {
         val intent = Intent(application.applicationContext, MediaPlayerService::class.java)
         application.startForegroundService(intent)
+
         application.bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 

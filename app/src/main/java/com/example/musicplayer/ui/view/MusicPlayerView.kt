@@ -35,13 +35,13 @@ import com.example.musicplayer.ui.viewmodel.MusicPlayerViewModel
 fun MusicPlayerView(navController: NavHostController, musicPlayerViewModel: MusicPlayerViewModel) {
 
     LaunchedEffect(Unit) {
-        musicPlayerViewModel.bindMediaPlayerService()
+        musicPlayerViewModel.initMediaPlayerService()
     }
 
     DisposableEffect(Unit) {
         onDispose {
             musicPlayerViewModel.clearValues()
-            musicPlayerViewModel.unBindMediaPlayerService()
+            musicPlayerViewModel.finishMediaPlayerService()
         }
     }
 
