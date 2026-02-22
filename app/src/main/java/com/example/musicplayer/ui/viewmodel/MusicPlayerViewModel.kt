@@ -139,6 +139,7 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
 
     fun bindMediaPlayerService() {
         val intent = Intent(application.applicationContext, MediaPlayerService::class.java)
+        application.startForegroundService(intent)
         application.bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 
