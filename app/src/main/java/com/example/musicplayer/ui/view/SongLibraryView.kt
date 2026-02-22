@@ -1,5 +1,8 @@
 package com.example.musicplayer.ui.view
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +27,17 @@ fun SongLibraryView(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
+            val musicPikerLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.OpenDocument()
+            ) { uri ->
+                uri?.let {
+                    navController.navigate(Routes.MusicPlayerView + "/" + Uri.encode(uri.toString()))
+                }
+            }
+
             Button(onClick = {
-                navController.navigate(Routes.MusicPlayerView + "/" + "music name")
+                musicPikerLauncher.launch(arrayOf("audio/*"))
             }) {
                 Text(text = "Select a music")
             }

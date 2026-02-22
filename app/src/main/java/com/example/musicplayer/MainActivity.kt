@@ -4,12 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.musicplayer.ui.Routes
 import com.example.musicplayer.ui.view.MusicPlayerView
 import com.example.musicplayer.ui.view.SongLibraryView
+import com.example.musicplayer.ui.viewmodel.MusicPlayerViewModel
+import com.example.musicplayer.ui.viewmodel.SongLibraryViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +21,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
+            val musicPlayerViewModel : MusicPlayerViewModel = viewModel()
+            val songLibraryViewModel : SongLibraryViewModel = viewModel()
+
             NavHost(navController = navController, startDestination = Routes.SongLibraryView, builder = {
 
                 composable (Routes.SongLibraryView)
@@ -25,13 +31,14 @@ class MainActivity : ComponentActivity() {
                     SongLibraryView(navController)
                 }
 
-                composable (Routes.MusicPlayerView + "/{musicName}")
+                composable (Routes.MusicPlayerView + "/{uri}")
                 {
-                    val musicName = it.arguments?.getString("musicName")
+                    val uri = it.arguments?.getString("uri")
 
-                    if (musicName != null)
+                    if (uri != null)
                     {
-                        MusicPlayerView(navController)
+                        musicPlayerViewModel.setUri(uri)
+                        MusicPlayerView(navController, musicPlayerViewModel)
                     }
                 }
             })

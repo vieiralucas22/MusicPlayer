@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,10 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.musicplayer.R
-import com.example.musicplayer.ui.Routes
+import com.example.musicplayer.ui.viewmodel.MusicPlayerViewModel
 
 @Composable
-fun MusicPlayerView(navController: NavHostController) {
+fun MusicPlayerView(navController: NavHostController, musicPlayerViewModel: MusicPlayerViewModel) {
+
+    LaunchedEffect(Unit) {
+        musicPlayerViewModel.loadMusicToPlay()
+    }
 
     Scaffold { paddingValues ->
 
@@ -45,7 +50,7 @@ fun MusicPlayerView(navController: NavHostController) {
                 modifier = Modifier.size(200.dp)
             )
 
-            MediaPlayerControlView()
+            MediaPlayerControlView(musicPlayerViewModel)
         }
     }
 }
@@ -70,8 +75,6 @@ fun HeaderView(navController: NavHostController) {
             )
         }
 
-        Text(text = "Music name")
-
         IconButton(
             onClick = { }
         ) {
@@ -84,7 +87,7 @@ fun HeaderView(navController: NavHostController) {
 }
 
 @Composable
-fun TransportBarView() {
+fun TransportBarView(musicPlayerViewModel: MusicPlayerViewModel) {
     Column(
         modifier = Modifier
             .padding(12.dp, 0.dp)
@@ -92,33 +95,58 @@ fun TransportBarView() {
     ) {
 
         Slider(
-            value = 50f,
+            value = musicPlayerViewModel.getCurrentPosition().toFloat(),
             onValueChange = { },
-            valueRange = 0f..100f,
+            valueRange = 0f..musicPlayerViewModel.getDuration().toFloat(),
             modifier = Modifier.height(2.dp)
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(0.dp, 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 12.dp),
             horizontalArrangement = Arrangement.Absolute.SpaceBetween
         ) {
-            Text(text = "00:53")
+            Text(text = musicPlayerViewModel.mCurrentPosition)
 
-            Text(text = "04:00", textAlign = TextAlign.End)
+            Text(text = musicPlayerViewModel.mDuration, textAlign = TextAlign.End)
         }
 
     }
 }
 
 @Composable
-fun MediaPlayerControlView()
-{
-    Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 36.dp)){
-        TransportBarView()
+fun MediaPlayerControlView(musicPlayerViewModel: MusicPlayerViewModel) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 36.dp)
+    ) {
+        TransportBarView(musicPlayerViewModel)
 
-        IconButton(onClick = {}, modifier = Modifier.width(64.dp))
-        {
-            Icon(painter = painterResource(R.drawable.ic_play), contentDescription = "Play button", modifier = Modifier.size(48.dp))
+        if (musicPlayerViewModel.mIsPlaying) {
+            PlayPauseButton(
+                onClick = { musicPlayerViewModel.playOrPauseMusic(true) },
+                resourceId = R.drawable.ic_pause,
+                "Pause Button"
+            )
+        } else {
+            PlayPauseButton(
+                onClick = { musicPlayerViewModel.playOrPauseMusic(false) },
+                resourceId = R.drawable.ic_play,
+                "Play Button"
+            )
         }
+    }
+}
+
+@Composable
+fun PlayPauseButton(onClick: () -> Unit, resourceId: Int, description: String) {
+    IconButton(onClick = onClick, modifier = Modifier.width(64.dp))
+    {
+        Icon(
+            painter = painterResource(resourceId),
+            contentDescription = description,
+            modifier = Modifier.size(48.dp)
+        )
     }
 }
