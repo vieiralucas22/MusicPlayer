@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +35,14 @@ import com.example.musicplayer.ui.viewmodel.MusicPlayerViewModel
 fun MusicPlayerView(navController: NavHostController, musicPlayerViewModel: MusicPlayerViewModel) {
 
     LaunchedEffect(Unit) {
-        musicPlayerViewModel.loadMusicToPlay()
+        musicPlayerViewModel.bindMediaPlayerService()
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            musicPlayerViewModel.clearValues()
+            musicPlayerViewModel.unBindMediaPlayerService()
+        }
     }
 
     Scaffold { paddingValues ->

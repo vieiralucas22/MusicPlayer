@@ -32,6 +32,8 @@ class MediaPlayerService : Service() {
 
     override fun onDestroy() {
         Log.d("[MusicPlayer]","onDestroy")
+
+        mediaPlayer?.release()
         super.onDestroy()
     }
 

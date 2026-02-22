@@ -37,16 +37,12 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
             var binder = service as MediaPlayerService.LocalBinder
             mMediaPlayerService = binder.getMediaPlayerService()
             mBounded = true
+            loadMusicToPlay()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             mBounded = false
         }
-    }
-
-    init {
-        val intent = Intent(application.applicationContext, MediaPlayerService::class.java)
-        application.bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 
     fun loadMusicToPlay() {
@@ -67,33 +63,45 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun getDuration(): Int {
+        if (!mBounded)
+            return 0
+
         return mMediaPlayerService.getDuration() ?: 0
     }
 
-    fun updateCurrentPosition(newPosition: Int)  {
+    fun updateCurrentPosition(newPosition: Int) {
         mCurrentPositionFormatted = formatMillisecondsToTime(newPosition)
         mCurrentSliderPosition = newPosition
     }
 
-    fun getCurrentPosition() : Int {
+    fun getCurrentPosition(): Int {
+        if (!mBounded)
+            return 0
+
         return mMediaPlayerService.getCurrentPosition() ?: 0
     }
 
-    fun playMusic()
-    {
+    fun playMusic() {
+        if (!mBounded)
+            return
+
         mIsPlaying = true
         mMediaPlayerService.startOrResumeMusic()
         updateElapseTime()
     }
 
-    fun pauseMusic()
-    {
+    fun pauseMusic() {
+        if (!mBounded)
+            return
+
         mIsPlaying = false
         mMediaPlayerService.pauseMusic()
     }
 
-    fun handleWithToggleMuteAction()
-    {
+    fun handleWithToggleMuteAction() {
+        if (!mBounded)
+            return
+
         if (mIsMute)
             mMediaPlayerService.unmutePlayer()
         else
@@ -102,19 +110,16 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
         mIsMute = !mIsMute
     }
 
-    private fun formatMillisecondsToTime(timeInMilliseconds : Int) : String
-    {
+    private fun formatMillisecondsToTime(timeInMilliseconds: Int): String {
         val totalSeconds = timeInMilliseconds.div(1000)
         val minutes = totalSeconds.div(60)
         val seconds = totalSeconds.rem(60)
         return "%02d:%02d".format(minutes, seconds)
     }
 
-    private fun updateElapseTime()
-    {
+    private fun updateElapseTime() {
         viewModelScope.launch {
-            while (mIsPlaying)
-            {
+            while (mIsPlaying && mBounded) {
                 updateCurrentPosition(getCurrentPosition())
                 delay(500)
             }
@@ -122,6 +127,28 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun seek(newPosition: Int) {
+        if (!mBounded)
+            return
+
         mMediaPlayerService.seekTo(newPosition)
+    }
+
+    fun unBindMediaPlayerService() {
+        application.unbindService(mConnection)
+    }
+
+    fun bindMediaPlayerService() {
+        val intent = Intent(application.applicationContext, MediaPlayerService::class.java)
+        application.bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    fun clearValues() {
+        mUri = ""
+        mDuration = ""
+        mCurrentPositionFormatted = ""
+        mCurrentSliderPosition = 0
+        mIsPlaying = true
+        mIsMute = false
+        mBounded = false
     }
 }
