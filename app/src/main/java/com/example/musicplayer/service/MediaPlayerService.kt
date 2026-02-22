@@ -71,6 +71,16 @@ class MediaPlayerService : Service() {
         return mediaPlayer?.currentPosition
     }
 
+    fun mutePlayer()
+    {
+        mediaPlayer?.setVolume(0f, 0f)
+    }
+
+    fun unmutePlayer()
+    {
+        mediaPlayer?.setVolume(1f, 1f)
+    }
+
     /*Inner class*/
     inner class LocalBinder() : Binder() {
         fun getMediaPlayerService() : MediaPlayerService = this@MediaPlayerService

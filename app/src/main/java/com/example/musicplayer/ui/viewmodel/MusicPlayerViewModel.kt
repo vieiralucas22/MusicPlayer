@@ -25,6 +25,7 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
     var mDuration by mutableStateOf("")
     var mCurrentPosition by mutableStateOf("")
     var mIsPlaying by mutableStateOf(true)
+    var mIsMute by mutableStateOf(false)
 
     private val mConnection = object : ServiceConnection {
         override fun onServiceConnected(
@@ -86,6 +87,16 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
+    fun handleWithToggleMuteAction()
+    {
+        if (mIsMute)
+            mMediaPlayerService.unmutePlayer()
+        else
+            mMediaPlayerService.mutePlayer()
+
+        mIsMute = !mIsMute
+    }
+
     private fun formatMillisecondsToTime(timeInMilliseconds : Int?) : String
     {
         val totalSeconds = timeInMilliseconds?.div(1000)
@@ -94,7 +105,7 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
         return "%02d:%02d".format(minutes, seconds)
     }
 
-    fun updateElapseTime()
+    private fun updateElapseTime()
     {
         viewModelScope.launch {
             while (mIsPlaying)
