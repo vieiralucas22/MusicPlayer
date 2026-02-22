@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
@@ -23,7 +24,8 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
     private var mBounded: Boolean = false
     var mUri by mutableStateOf("")
     var mDuration by mutableStateOf("")
-    var mCurrentPosition by mutableStateOf("")
+    var mCurrentPositionFormatted by mutableStateOf("")
+    var mCurrentSliderPosition by mutableIntStateOf(0)
     var mIsPlaying by mutableStateOf(true)
     var mIsMute by mutableStateOf(false)
 
@@ -61,30 +63,33 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun getFormattedDuration(): String {
-        return formatMillisecondsToTime(mMediaPlayerService.getDuration())
+        return formatMillisecondsToTime(getDuration())
     }
 
     fun getDuration(): Int {
         return mMediaPlayerService.getDuration() ?: 0
     }
 
-    fun updateCurrentPosition()  {
-        mCurrentPosition = formatMillisecondsToTime(mMediaPlayerService.getCurrentPosition())
+    fun updateCurrentPosition(newPosition: Int)  {
+        mCurrentPositionFormatted = formatMillisecondsToTime(newPosition)
+        mCurrentSliderPosition = newPosition
     }
 
     fun getCurrentPosition() : Int {
         return mMediaPlayerService.getCurrentPosition() ?: 0
     }
 
-    fun playOrPauseMusic(isPlaying: Boolean) {
-        mIsPlaying = !isPlaying
+    fun playMusic()
+    {
+        mIsPlaying = true
+        mMediaPlayerService.startOrResumeMusic()
+        updateElapseTime()
+    }
 
-        if (isPlaying)
-            mMediaPlayerService.pauseMusic()
-        else {
-            mMediaPlayerService.startOrResumeMusic()
-            updateElapseTime()
-        }
+    fun pauseMusic()
+    {
+        mIsPlaying = false
+        mMediaPlayerService.pauseMusic()
     }
 
     fun handleWithToggleMuteAction()
@@ -97,11 +102,11 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
         mIsMute = !mIsMute
     }
 
-    private fun formatMillisecondsToTime(timeInMilliseconds : Int?) : String
+    private fun formatMillisecondsToTime(timeInMilliseconds : Int) : String
     {
-        val totalSeconds = timeInMilliseconds?.div(1000)
-        val minutes = totalSeconds?.div(60)
-        val seconds = totalSeconds?.rem(60)
+        val totalSeconds = timeInMilliseconds.div(1000)
+        val minutes = totalSeconds.div(60)
+        val seconds = totalSeconds.rem(60)
         return "%02d:%02d".format(minutes, seconds)
     }
 
@@ -110,9 +115,13 @@ class MusicPlayerViewModel(application: Application) : AndroidViewModel(applicat
         viewModelScope.launch {
             while (mIsPlaying)
             {
-                updateCurrentPosition()
+                updateCurrentPosition(getCurrentPosition())
                 delay(500)
             }
         }
+    }
+
+    fun seek(newPosition: Int) {
+        mMediaPlayerService.seekTo(newPosition)
     }
 }

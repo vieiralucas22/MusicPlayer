@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -86,8 +85,7 @@ fun HeaderView(navController: NavHostController, musicPlayerViewModel: MusicPlay
                 if (musicPlayerViewModel.mIsMute)
                     LightGray
                 else
-                    Color.Transparent
-                , shape = RoundedCornerShape(99.dp)
+                    Color.Transparent, shape = RoundedCornerShape(99.dp)
             )
         ) {
             Icon(
@@ -107,8 +105,15 @@ fun TransportBarView(musicPlayerViewModel: MusicPlayerViewModel) {
     ) {
 
         Slider(
-            value = musicPlayerViewModel.getCurrentPosition().toFloat(),
-            onValueChange = { },
+            value = musicPlayerViewModel.mCurrentSliderPosition.toFloat(),
+            onValueChange = {
+                musicPlayerViewModel.pauseMusic()
+                musicPlayerViewModel.updateCurrentPosition(it.toInt())
+            },
+            onValueChangeFinished = {
+                musicPlayerViewModel.seek(musicPlayerViewModel.mCurrentSliderPosition)
+                musicPlayerViewModel.playMusic()
+            },
             valueRange = 0f..musicPlayerViewModel.getDuration().toFloat(),
             modifier = Modifier.height(2.dp)
         )
@@ -119,7 +124,7 @@ fun TransportBarView(musicPlayerViewModel: MusicPlayerViewModel) {
                 .padding(0.dp, 12.dp),
             horizontalArrangement = Arrangement.Absolute.SpaceBetween
         ) {
-            Text(text = musicPlayerViewModel.mCurrentPosition)
+            Text(text = musicPlayerViewModel.mCurrentPositionFormatted)
 
             Text(text = musicPlayerViewModel.mDuration, textAlign = TextAlign.End)
         }
@@ -137,13 +142,13 @@ fun MediaPlayerControlView(musicPlayerViewModel: MusicPlayerViewModel) {
 
         if (musicPlayerViewModel.mIsPlaying) {
             PlayPauseButton(
-                onClick = { musicPlayerViewModel.playOrPauseMusic(true) },
+                onClick = { musicPlayerViewModel.pauseMusic() },
                 resourceId = R.drawable.ic_pause,
                 "Pause Button"
             )
         } else {
             PlayPauseButton(
-                onClick = { musicPlayerViewModel.playOrPauseMusic(false) },
+                onClick = { musicPlayerViewModel.playMusic() },
                 resourceId = R.drawable.ic_play,
                 "Play Button"
             )

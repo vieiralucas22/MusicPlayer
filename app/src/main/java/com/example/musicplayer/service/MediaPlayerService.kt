@@ -81,6 +81,11 @@ class MediaPlayerService : Service() {
         mediaPlayer?.setVolume(1f, 1f)
     }
 
+    fun seekTo(millisecond : Int)
+    {
+        mediaPlayer?.seekTo(millisecond)
+    }
+
     /*Inner class*/
     inner class LocalBinder() : Binder() {
         fun getMediaPlayerService() : MediaPlayerService = this@MediaPlayerService
