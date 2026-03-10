@@ -10,19 +10,47 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.musicplayer.R
 import com.example.musicplayer.Routes
 
 @Composable
 fun SongLibraryView(navController: NavHostController) {
-    Scaffold { paddingValues ->
+
+    val musicPikerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let {
+            navController.navigate(Routes.MusicPlayerView + "/" + Uri.encode(uri.toString()))
+        }
+    }
+
+    Scaffold(
+        floatingActionButton =
+            {
+                FloatingActionButton(
+                    onClick = { musicPikerLauncher.launch(arrayOf("audio/*")) },
+                    containerColor = colorResource(R.color.orange)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_add_music),
+                        contentDescription = "Icon",
+                        tint = colorResource(R.color.white)
+                    )
+                }
+            }) { paddingValues ->
 
         Box {
 
@@ -40,21 +68,15 @@ fun SongLibraryView(navController: NavHostController) {
                 verticalArrangement = Arrangement.Center
             ) {
 
-                val musicPikerLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.OpenDocument()
-                ) { uri ->
-                    uri?.let {
-                        navController.navigate(Routes.MusicPlayerView + "/" + Uri.encode(uri.toString()))
-                    }
-                }
+                Text(
+                    text = "No musics in your library yet! \n Click on the below button to add new musics!",
+                    fontSize = 16.sp,
+                    color = colorResource(R.color.white),
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center
+                )
 
-                Button(onClick = {
-                    musicPikerLauncher.launch(arrayOf("audio/*"))
-                }) {
-                    Text(text = "Select a music")
-                }
             }
-
         }
     }
 }
