@@ -62,7 +62,7 @@ fun MusicPlayerView(navController: NavHostController, musicPlayerViewModel: Musi
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                HeaderView(navController, musicPlayerViewModel)
+                HeaderView({ navController.popBackStack() }, musicPlayerViewModel)
 
                 Image(
                     painter = painterResource(R.drawable.live_music),
@@ -77,7 +77,7 @@ fun MusicPlayerView(navController: NavHostController, musicPlayerViewModel: Musi
 }
 
 @Composable
-fun HeaderView(navController: NavHostController, musicPlayerViewModel: MusicPlayerViewModel) {
+fun HeaderView(backNavigation: () -> Unit, musicPlayerViewModel: MusicPlayerViewModel) {
     Row(
         modifier = Modifier
             .padding(12.dp)
@@ -86,9 +86,7 @@ fun HeaderView(navController: NavHostController, musicPlayerViewModel: MusicPlay
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(
-            onClick = {
-                navController.popBackStack()
-            }
+            onClick = backNavigation
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_left),
@@ -101,7 +99,7 @@ fun HeaderView(navController: NavHostController, musicPlayerViewModel: MusicPlay
             onClick = { musicPlayerViewModel.handleWithToggleMuteAction() },
             Modifier.background(
                 if (musicPlayerViewModel.mIsMute)
-                    colorResource(id = R.color.teal_200)
+                    colorResource(id = R.color.orange)
                 else
                     Color.Transparent, shape = RoundedCornerShape(99.dp)
             )
