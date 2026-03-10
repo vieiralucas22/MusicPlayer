@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias (libs.plugins.ksp)
+    alias (libs.plugins.dagger.hilt)
     id("kotlin-kapt")
 }
 
@@ -31,11 +33,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose = true
@@ -57,6 +59,10 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
+    /*******************/
+    /*Dagger Hilt Dependencies*/
+    implementation(libs.dagger.hilt)
+    ksp(libs.hilt.compiler)
     /*******************/
     implementation("androidx.media3:media3-exoplayer:1.7.1")
     implementation("androidx.media3:media3-ui:1.7.1")

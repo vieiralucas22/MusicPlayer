@@ -13,6 +13,8 @@ media3Exoplayer = "1.9.2"
 navigationCompose = "2.9.7"
 navigationRuntimeKtx = "2.9.7"
 roomRuntime = "2.8.3"
+dagger-hilt = "2.57.1"
+ksp = "2.3.0"
 
 
 [libraries]
@@ -36,9 +38,12 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+dagger-hilt = {module = "com.google.dagger:hilt-android", version.ref ="dagger-hilt"}
+hilt-compiler = {module = "com.google.dagger:hilt-android-compiler", version.ref ="dagger-hilt"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+dagger-hilt = {id = "com.google.dagger.hilt.android", version.ref ="dagger-hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

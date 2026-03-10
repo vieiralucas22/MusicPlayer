@@ -18,7 +18,10 @@ import com.example.musicplayer.view.MusicPlayerView
 import com.example.musicplayer.view.SongLibraryView
 import com.example.musicplayer.viewmodel.MusicPlayerViewModel
 import com.example.musicplayer.viewmodel.SongLibraryViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
