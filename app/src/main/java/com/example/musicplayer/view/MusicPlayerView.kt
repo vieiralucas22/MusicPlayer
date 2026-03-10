@@ -3,6 +3,7 @@ package com.example.musicplayer.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,22 +48,30 @@ fun MusicPlayerView(navController: NavHostController, musicPlayerViewModel: Musi
 
     Scaffold { paddingValues ->
 
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            HeaderView(navController, musicPlayerViewModel)
-
+        Box {
             Image(
-                painter = painterResource(R.drawable.live_music),
-                contentDescription = "Music Image",
-                modifier = Modifier.size(200.dp)
+                painter = painterResource(R.drawable.bg),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
             )
 
-            MediaPlayerControlView(musicPlayerViewModel)
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                HeaderView(navController, musicPlayerViewModel)
+
+                Image(
+                    painter = painterResource(R.drawable.live_music),
+                    contentDescription = "Music Image",
+                    modifier = Modifier.size(200.dp)
+                )
+
+                MediaPlayerControlView(musicPlayerViewModel)
+            }
         }
     }
 }
@@ -83,7 +92,8 @@ fun HeaderView(navController: NavHostController, musicPlayerViewModel: MusicPlay
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_left),
-                contentDescription = "Back button"
+                contentDescription = "Back button",
+                tint = colorResource(R.color.white)
             )
         }
 
@@ -98,7 +108,8 @@ fun HeaderView(navController: NavHostController, musicPlayerViewModel: MusicPlay
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_mute_music),
-                contentDescription = "Mute music button"
+                contentDescription = "Mute music button",
+                tint = colorResource(R.color.white)
             )
         }
     }
@@ -132,9 +143,16 @@ fun TransportBarView(musicPlayerViewModel: MusicPlayerViewModel) {
                 .padding(0.dp, 12.dp),
             horizontalArrangement = Arrangement.Absolute.SpaceBetween
         ) {
-            Text(text = musicPlayerViewModel.mCurrentPositionFormatted)
+            Text(
+                text = musicPlayerViewModel.mCurrentPositionFormatted,
+                color = colorResource(R.color.white)
+            )
 
-            Text(text = musicPlayerViewModel.mDuration, textAlign = TextAlign.End)
+            Text(
+                text = musicPlayerViewModel.mDuration,
+                textAlign = TextAlign.End,
+                color = colorResource(R.color.white)
+            )
         }
 
     }
@@ -171,7 +189,8 @@ fun PlayPauseButton(onClick: () -> Unit, resourceId: Int, description: String) {
         Icon(
             painter = painterResource(resourceId),
             contentDescription = description,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(48.dp),
+            tint = colorResource(R.color.white)
         )
     }
 }
