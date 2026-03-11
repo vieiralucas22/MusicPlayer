@@ -4,11 +4,16 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,13 +26,21 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.musicplayer.R
 import com.example.musicplayer.Routes
+import com.example.musicplayer.viewmodel.SongLibraryViewModel
+import com.example.musicplayer.viewmodel.dialog.AddMusicDialogViewModel
 
 @Composable
-fun SongLibraryView(navController: NavHostController) {
+fun SongLibraryView(
+    navController: NavHostController,
+    addMusicDialogViewModel: AddMusicDialogViewModel,
+    songLibraryViewModel: SongLibraryViewModel
+) {
 
     val musicPikerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -37,11 +50,16 @@ fun SongLibraryView(navController: NavHostController) {
         }
     }
 
+    val allMusics = songLibraryViewModel.allMusics.collectAsStateWithLifecycle(emptyList())
+
     Scaffold(
         floatingActionButton =
             {
                 FloatingActionButton(
-                    onClick = { musicPikerLauncher.launch(arrayOf("audio/*")) },
+                    onClick = {
+                        musicPikerLauncher.launch(arrayOf("audio/*"))
+                        addMusicDialogViewModel.openDialog()
+                    },
                     containerColor = colorResource(R.color.orange)
                 ) {
                     Icon(
@@ -68,6 +86,14 @@ fun SongLibraryView(navController: NavHostController) {
                 verticalArrangement = Arrangement.Center
             ) {
 
+                allMusics.let { music ->
+                    LazyColumn(content = {
+
+                    })
+                }
+
+
+
                 Text(
                     text = "No musics in your library yet! \n Click on the below button to add new musics!",
                     fontSize = 16.sp,
@@ -78,5 +104,17 @@ fun SongLibraryView(navController: NavHostController) {
 
             }
         }
+    }
+}
+
+@Composable
+fun MusicItem(musicName: String = "", onClick: (Int) -> Unit = {}, index: Int = 0) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp)
+        .clickable(onClick = { onClick(index) })) {
+        Icon(painter = painterResource(R.drawable.ic_music), contentDescription = null)
+
+        Text(text = musicName)
     }
 }
