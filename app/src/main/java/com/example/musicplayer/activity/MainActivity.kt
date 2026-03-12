@@ -18,8 +18,8 @@ import com.example.musicplayer.view.MusicPlayerView
 import com.example.musicplayer.view.SongLibraryView
 import com.example.musicplayer.viewmodel.MusicPlayerViewModel
 import com.example.musicplayer.viewmodel.SongLibraryViewModel
+import com.example.musicplayer.viewmodel.dialog.AddMusicDialogViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
             val musicPlayerViewModel : MusicPlayerViewModel = viewModel()
             val songLibraryViewModel : SongLibraryViewModel = viewModel()
+            val addMusicDialogViewModel : AddMusicDialogViewModel = viewModel()
 
             NavHost(
                 navController = navController,
@@ -42,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
                     composable(Routes.SongLibraryView)
                     {
-                        SongLibraryView(navController)
+                        SongLibraryView(navController, addMusicDialogViewModel, songLibraryViewModel)
                     }
 
                     composable(Routes.MusicPlayerView + "/{uri}")
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
 
                         if (uri != null) {
                             musicPlayerViewModel.setUri(uri)
+
                             MusicPlayerView(navController, musicPlayerViewModel)
                         }
                     }
@@ -63,11 +65,14 @@ class MainActivity : ComponentActivity() {
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_MEDIA_AUDIO
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.READ_MEDIA_AUDIO),
                     100
                 )
             }

@@ -9,9 +9,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicplayer.model.entity.MusicEntity
 import com.example.musicplayer.model.repository.IMusicRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class AddMusicDialogViewModel @Inject constructor(application: Application, private val mMusicRepository: IMusicRepository) :
     AndroidViewModel(application) {
 
@@ -30,7 +32,7 @@ class AddMusicDialogViewModel @Inject constructor(application: Application, priv
     fun addAMusicInLibrary(uri : Uri)
     {
         viewModelScope.launch {
-            val entity = MusicEntity(name = name, uri = uri)
+            val entity = MusicEntity(name = name, uri = Uri.encode(uri.toString()))
             mMusicRepository.insertMusic(entity)
         }
     }

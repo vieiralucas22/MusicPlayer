@@ -13,5 +13,5 @@ data class MusicEntity(
     @ColumnInfo
     val name: String,
     @ColumnInfo
-    val uri: Uri
+    val uri: String
 )

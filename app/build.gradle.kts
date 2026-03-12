@@ -64,6 +64,11 @@ dependencies {
     implementation(libs.dagger.hilt)
     ksp(libs.hilt.compiler)
     /*******************/
+    /*Live Data Dependencies*/
+    implementation (libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.compose.runtime.livedata)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    /*******************/
     implementation("androidx.media3:media3-exoplayer:1.7.1")
     implementation("androidx.media3:media3-ui:1.7.1")
     implementation("io.coil-kt:coil-compose:2.7.0")

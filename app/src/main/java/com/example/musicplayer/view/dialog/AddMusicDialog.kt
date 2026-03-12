@@ -1,22 +1,32 @@
 package com.example.musicplayer.view.dialog
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavHostController
 import com.example.musicplayer.R
-import com.example.musicplayer.Routes
 import com.example.musicplayer.viewmodel.dialog.AddMusicDialogViewModel
 
 @Composable
-fun AddMusicDialogView(addMusicDialogViewModel: AddMusicDialogViewModel) {
+fun AddMusicDialogView(
+    addMusicDialogViewModel: AddMusicDialogViewModel
+) {
 
     val musicPikerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -27,20 +37,26 @@ fun AddMusicDialogView(addMusicDialogViewModel: AddMusicDialogViewModel) {
         }
     }
 
-    var name = addMusicDialogViewModel.name
-
     if (addMusicDialogViewModel.isDialogOpen) {
 
-        Dialog(onDismissRequest = { addMusicDialogViewModel.closeDialog()} )
+        Dialog(onDismissRequest = { addMusicDialogViewModel.closeDialog() })
         {
-            Column {
+            Column(
+                modifier = Modifier
+                    .background(
+                        color = colorResource(R.color.white),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(8.dp)
+            ) {
                 OutlinedTextField(
-                    value = name,
+                    modifier = Modifier.fillMaxWidth(),
+                    value = addMusicDialogViewModel.name,
                     onValueChange = {
-                        name = it
+                        addMusicDialogViewModel.name = it
                     },
                     label = { Text(text = "Music name") },
-                    isError = name.isEmpty(),
+                    isError = addMusicDialogViewModel.name.isEmpty(),
                     colors = TextFieldDefaults.colors(
                         errorIndicatorColor = colorResource(R.color.errorColor),
                         errorContainerColor = colorResource(R.color.white),
@@ -49,7 +65,15 @@ fun AddMusicDialogView(addMusicDialogViewModel: AddMusicDialogViewModel) {
                     )
                 )
 
-                Button(onClick = {musicPikerLauncher.launch(arrayOf("audio/*"))}) {
+                HorizontalDivider(
+                    Modifier.height(16.dp),
+                )
+
+                Button(modifier = Modifier.align(Alignment.End),onClick = {
+                    if (addMusicDialogViewModel.name.isNotEmpty())
+                        musicPikerLauncher.launch(arrayOf("audio/*"))
+                }
+                ) {
                     Text(text = "Add a music")
                 }
             }

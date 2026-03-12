@@ -15,10 +15,13 @@ import androidx.lifecycle.application
 import com.example.musicplayer.service.MediaPlayerService
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MusicPlayerViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class MusicPlayerViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
 
     private lateinit var mMediaPlayerService: MediaPlayerService
     private var mBounded: Boolean = false
