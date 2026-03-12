@@ -17,9 +17,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -76,27 +78,36 @@ fun SongLibraryView(
 
             Column(
                 modifier = Modifier
-                    .padding(24.dp)
+                    .padding(24.dp, 48.dp)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Top
             ) {
+
+                Text(
+                    text = "Library musics! Choose one.",
+                    color = colorResource(R.color.white),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                VerticalDivider(Modifier.height(16.dp), color = colorResource(R.color.transparent))
 
                 allMusicsInLibrary.let { musics ->
                     if (musics.isNotEmpty()) {
                         LazyColumn(content = {
                             itemsIndexed(musics) { index, music ->
-                                MusicItem(music.name, onClick =
-                                    {
-                                        navController.navigate(Routes.MusicPlayerView + "/" + music.uri)
-                                    })
+                                MusicItem(
+                                    music.name, onClick =
+                                        {
+                                            navController.navigate(Routes.MusicPlayerView + "/" + music.uri)
+                                        })
                             }
                         })
                     } else {
                         EmptyLibrary()
                     }
-
-                } ?: EmptyLibrary()
+                }
             }
 
             AddMusicDialogView(addMusicDialogViewModel)
@@ -119,7 +130,7 @@ fun MusicItem(musicName: String = "", onClick: (Int) -> Unit = {}, index: Int = 
             tint = colorResource(R.color.orange)
         )
 
-        Divider(Modifier.width(8.dp), color = colorResource(R.color.transparent))
+        HorizontalDivider(Modifier.width(8.dp), color = colorResource(R.color.transparent))
 
         Text(
             text = musicName,
