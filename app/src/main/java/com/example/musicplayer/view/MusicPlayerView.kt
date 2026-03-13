@@ -14,15 +14,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -121,6 +122,7 @@ fun HeaderView(backNavigation: () -> Unit, musicPlayerViewModel: MusicPlayerView
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransportBarView(musicPlayerViewModel: MusicPlayerViewModel) {
     Column(
@@ -140,7 +142,13 @@ fun TransportBarView(musicPlayerViewModel: MusicPlayerViewModel) {
                 musicPlayerViewModel.playMusic()
             },
             valueRange = 0f..musicPlayerViewModel.getDuration().toFloat(),
-            modifier = Modifier.height(2.dp)
+            modifier = Modifier.height(2.dp),
+            colors = SliderDefaults.colors(
+                inactiveTrackColor = colorResource(R.color.white_80),
+                inactiveTickColor = colorResource(R.color.orange),
+                thumbColor = colorResource(R.color.white),
+                activeTrackColor = colorResource(R.color.white),
+            )
         )
 
         Row(
@@ -178,7 +186,9 @@ fun MediaPlayerControlView(musicPlayerViewModel: MusicPlayerViewModel) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
 
-            IconButton(onClick = {}, modifier = Modifier.width(64.dp))
+            IconButton(onClick = {
+                isRepeat = !isRepeat
+            }, modifier = Modifier.width(64.dp))
             {
                 Icon(
                     painter = painterResource(R.drawable.ic_repeat),
@@ -222,7 +232,7 @@ fun MediaPlayerControlView(musicPlayerViewModel: MusicPlayerViewModel) {
                 )
             }
 
-            IconButton(onClick = {}, modifier = Modifier.width(64.dp))
+            IconButton(onClick = {isShuffle = !isShuffle}, modifier = Modifier.width(64.dp))
             {
                 Icon(
                     painter = painterResource(R.drawable.ic_shuffle),
@@ -240,7 +250,8 @@ fun MediaPlayerControlView(musicPlayerViewModel: MusicPlayerViewModel) {
 
 @Composable
 fun PlayPauseButton(onClick: () -> Unit, resourceId: Int, description: String) {
-    IconButton(onClick = onClick,
+    IconButton(
+        onClick = onClick,
         modifier = Modifier
             .size(64.dp)
             .background(color = colorResource(R.color.white), shape = CircleShape)
