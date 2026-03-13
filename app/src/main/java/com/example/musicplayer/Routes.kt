@@ -4,4 +4,5 @@ object Routes {
 
     val SongLibraryView = "SongLibraryView"
     val MusicPlayerView = "MusicPlayerView"
+    val SplashView = "SplashView"
 }

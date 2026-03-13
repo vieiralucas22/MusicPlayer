@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.musicplayer.Routes
 import com.example.musicplayer.view.MusicPlayerView
 import com.example.musicplayer.view.SongLibraryView
+import com.example.musicplayer.view.SplashView
 import com.example.musicplayer.viewmodel.MusicPlayerViewModel
 import com.example.musicplayer.viewmodel.SongLibraryViewModel
 import com.example.musicplayer.viewmodel.dialog.AddMusicDialogViewModel
@@ -38,8 +39,15 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navController,
-                startDestination = Routes.SongLibraryView,
+                startDestination = Routes.SplashView,
                 builder = {
+
+                    composable(Routes.SplashView)
+                    {
+                        SplashView({
+                            navController.navigate(Routes.SongLibraryView)
+                        })
+                    }
 
                     composable(Routes.SongLibraryView)
                     {

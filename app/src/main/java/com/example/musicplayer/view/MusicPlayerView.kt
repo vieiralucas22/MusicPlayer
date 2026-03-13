@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,9 +22,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -52,7 +59,8 @@ fun MusicPlayerView(navController: NavHostController, musicPlayerViewModel: Musi
             Image(
                 painter = painterResource(R.drawable.bg),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
 
             Column(
@@ -162,33 +170,86 @@ fun MediaPlayerControlView(musicPlayerViewModel: MusicPlayerViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 36.dp)
     ) {
+
+        var isRepeat by remember { mutableStateOf(false) }
+        var isShuffle by remember { mutableStateOf(false) }
+
         TransportBarView(musicPlayerViewModel)
 
-        if (musicPlayerViewModel.mIsPlaying) {
-            PlayPauseButton(
-                onClick = { musicPlayerViewModel.pauseMusic() },
-                resourceId = R.drawable.ic_pause,
-                "Pause Button"
-            )
-        } else {
-            PlayPauseButton(
-                onClick = { musicPlayerViewModel.playMusic() },
-                resourceId = R.drawable.ic_play,
-                "Play Button"
-            )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+
+            IconButton(onClick = {}, modifier = Modifier.width(64.dp))
+            {
+                Icon(
+                    painter = painterResource(R.drawable.ic_repeat),
+                    contentDescription = "Repeat Icon",
+                    modifier = Modifier.size(24.dp),
+                    tint = if (isRepeat) colorResource(R.color.orange) else colorResource(R.color.white)
+                )
+            }
+
+            IconButton(onClick = {}, modifier = Modifier.width(64.dp))
+            {
+                Icon(
+                    painter = painterResource(R.drawable.ic_left),
+                    contentDescription = "Left Icon",
+                    modifier = Modifier.size(24.dp),
+                    tint = colorResource(R.color.white)
+                )
+            }
+
+            if (musicPlayerViewModel.mIsPlaying) {
+                PlayPauseButton(
+                    onClick = { musicPlayerViewModel.pauseMusic() },
+                    resourceId = R.drawable.ic_pause,
+                    "Pause Button"
+                )
+            } else {
+                PlayPauseButton(
+                    onClick = { musicPlayerViewModel.playMusic() },
+                    resourceId = R.drawable.ic_play,
+                    "Play Button"
+                )
+            }
+
+            IconButton(onClick = {}, modifier = Modifier.width(64.dp))
+            {
+                Icon(
+                    painter = painterResource(R.drawable.ic_right),
+                    contentDescription = "Right Icon",
+                    modifier = Modifier.size(24.dp),
+                    tint = colorResource(R.color.white)
+                )
+            }
+
+            IconButton(onClick = {}, modifier = Modifier.width(64.dp))
+            {
+                Icon(
+                    painter = painterResource(R.drawable.ic_shuffle),
+                    contentDescription = "Shuffle Icon",
+                    modifier = Modifier.size(24.dp),
+                    tint = if (isShuffle) colorResource(R.color.orange) else colorResource(R.color.white)
+                )
+            }
+
         }
+
+
     }
 }
 
 @Composable
 fun PlayPauseButton(onClick: () -> Unit, resourceId: Int, description: String) {
-    IconButton(onClick = onClick, modifier = Modifier.width(64.dp))
+    IconButton(onClick = onClick,
+        modifier = Modifier
+            .size(64.dp)
+            .background(color = colorResource(R.color.white), shape = CircleShape)
+    )
     {
         Icon(
             painter = painterResource(resourceId),
             contentDescription = description,
-            modifier = Modifier.size(48.dp),
-            tint = colorResource(R.color.white)
+            tint = colorResource(R.color.orange)
         )
     }
 }

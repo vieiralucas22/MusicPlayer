@@ -1,5 +1,6 @@
 package com.example.musicplayer.view
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +44,7 @@ import com.example.musicplayer.view.dialog.AddMusicDialogView
 import com.example.musicplayer.viewmodel.SongLibraryViewModel
 import com.example.musicplayer.viewmodel.dialog.AddMusicDialogViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SongLibraryView(
     navController: NavHostController,
@@ -66,14 +70,18 @@ fun SongLibraryView(
                         tint = colorResource(R.color.white)
                     )
                 }
-            }) { paddingValues ->
+            }) {
 
         Box {
 
             Image(
-                painter = painterResource(R.drawable.bg),
+                painter = painterResource(R.drawable.intro_pic),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                        .fillMaxSize()
+                        .blur(10.dp)
+                        .align(Alignment.TopCenter),
+                contentScale = ContentScale.Crop
             )
 
             Column(
