@@ -1,5 +1,6 @@
 package com.example.musicplayer.view.dialog
 
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -27,11 +29,17 @@ import com.example.musicplayer.viewmodel.dialog.AddMusicDialogViewModel
 fun AddMusicDialogView(
     addMusicDialogViewModel: AddMusicDialogViewModel
 ) {
-
+    val context = LocalContext.current
     val musicPikerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
         uri?.let {
+
+            context.contentResolver.takePersistableUriPermission(
+                it,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+
             addMusicDialogViewModel.addAMusicInLibrary(uri)
             addMusicDialogViewModel.closeDialog()
         }
